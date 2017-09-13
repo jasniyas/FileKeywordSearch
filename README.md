@@ -7,6 +7,7 @@ I used pythonwin to develop search keyword functionality - https://winpython.git
 # Folder Description 
 1. FileSearch.py - Code to extract keyword counts
 2. Input folder - Contains input files
+3. EmptyInput folder - contains empty input files
 
 # Clone the repo from github using command line
 1. Open command line 
