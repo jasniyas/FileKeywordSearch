@@ -1,4 +1,4 @@
-import os, re
+import os, re, mmap
 import matplotlib.pyplot as plt
 import numpy as npy
 
@@ -11,6 +11,7 @@ output = {}
 #search through all files in given directory
 def SearchFile(curr_dir, exp):
     #initialize count
+    results = {}
     count = 0
     #list all files directory
     for filename in os.listdir(curr_dir):
@@ -19,11 +20,12 @@ def SearchFile(curr_dir, exp):
         if os.path.isfile(fname):
             #open file, check for matches
             with open(fname) as f:
-                for line in f:
-                    searchobj = re.search(exp, line, re.M|re.I)
-                    if searchobj:
-                        count +=1
-    return count
+                ans = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+                #increment count if match found
+                if ans.find(exp) != -1:
+                    count +=1
+    results[curr_dir] = count
+    return results[curr_dir]
 
 #recursively walk through all dirs & call FileSearch for each subdir
 for root, dirs, files in os.walk(root_dir):
@@ -37,7 +39,7 @@ print output
 graph= npy.arange(len(output))
 plt.bar(graph, output.values())
 plt.xticks(graph, output.keys())
-plt.ylim(0, max(output.values())+2)
+plt.ylim(0, max(output.values())+3)
 
 plt.title("Distribution of keywords")
 plt.xlabel("Subdirectory Names")
